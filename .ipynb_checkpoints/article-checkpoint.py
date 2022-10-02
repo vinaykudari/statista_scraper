@@ -3,7 +3,7 @@ import requests
 
 from bs4 import BeautifulSoup
 
-from scraper import Scraper
+from statista import Scraper
 
 class Article(Scraper):
     def __init__(self, url, mediaPath='data/media', dataPath='data'):

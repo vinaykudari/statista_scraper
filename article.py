@@ -1,13 +1,13 @@
 import os
 import requests
 
-from bs4 import BeautifulSoup
+from helper import Scraper
 
-from scraper import Scraper
 
 class Article(Scraper):
     def __init__(self, url, mediaPath='data/media', dataPath='data'):
         super().__init__()
+        self.graphicPath = None
         assert url != '', 'invalid url'
         
         self.url = url
@@ -23,8 +23,7 @@ class Article(Scraper):
         self.bootstrap()
         
     def bootstrap(self):
-        self.source, self.soup = self.getSourceSoup(
-            self.url, force=True)
+        self.source, self.soup = self.getSourceSoup(self.url)
         self.setArticleId()
         self.setTitle()
         self.setBody()

@@ -1,41 +1,14 @@
 import json
 import os
-import requests
-
-from bs4 import BeautifulSoup
 
 from article import Article
+from helper import Scraper
 
 STATISTA_HOME = 'https://www.statista.com'
 
 
-class Scraper:
-    def __init__(self):
-        self.source = None
-        self.soup = None
-
-    @staticmethod
-    def checkFile(file):
-        return os.path.isfile(file)
-
-    @staticmethod
-    def getSourceSoup(url):
-        source = requests.get(url)
-        soup = BeautifulSoup(
-            source.text, 'html.parser')
-        return source, soup
-
-    @staticmethod
-    def getAllElements(soup, elementType, attr):
-        return soup.find_all(elementType, attr)
-
-    @staticmethod
-    def getElement(soup, elementType, attr):
-        return soup.find(elementType, attr)
-
-
 class Statista(Scraper):
-    ''' Scrape chart of the day infographics'''
+    """ Scrape chart of the day infographics"""
 
     def __init__(self, dataPath='data'):
         super().__init__()
