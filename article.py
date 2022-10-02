@@ -11,8 +11,8 @@ class Article(Scraper):
         assert url != '', 'invalid url'
         
         self.url = url
-        self.dataPath = f'{os.getcwd()}/{dataPath}'
-        self.mediaPath = f'{os.getcwd()}/{mediaPath}' 
+        self.dataPath = dataPath
+        self.mediaPath = mediaPath
         self.title = ''
         self.body = ''
         self.tag = ''
@@ -74,7 +74,9 @@ class Article(Scraper):
             'div', {'class': 'article__graphic'}
         )
         if element:
-            self.graphicUrl = element.find('img').attrs.get('data-src', '')
+            image = element.find('img')
+            if image:
+                self.graphicUrl = image.attrs.get('data-src', '')
             
     def checkMedia(self):
         return self.checkFile(self.graphicPath)
@@ -83,7 +85,7 @@ class Article(Scraper):
         if not self.graphicUrl:
             self.setGraphicUrl()
             
-            if not self.checkMedia():
+            if self.graphicUrl and not self.checkMedia():
                 data = requests.get(self.graphicUrl).content
 
                 os.makedirs(os.path.dirname(self.graphicPath), exist_ok=True)

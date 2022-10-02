@@ -44,7 +44,6 @@ class Statista(Scraper):
 
     def getArticleUrls(self, pageNo):
         lis = []
-        alreadyPresent = 0
         pageUrl = self.getPageUrl(page=pageNo)
         source, soup = self.getSourceSoup(pageUrl)
         articles = self.getAllElements(
@@ -62,29 +61,31 @@ class Statista(Scraper):
 
             if not graphicFile or not textFile:
                 lis.append(f'{STATISTA_HOME}{articleUrl}')
-            else:
-                alreadyPresent += 1
 
-        return lis, alreadyPresent
+        return lis
 
     def scrapeArticles(self, pageNo):
         articles = []
         article = None
-        articleUrls, alreadyPresent = self.getArticleUrls(pageNo)
+        articleUrls = self.getArticleUrls(pageNo)
         for articleUrl in articleUrls:
             try:
                 article = self.scrapeArticle(articleUrl)
             except Exception as e:
-                print(f'Exception for {articleUrl}; e = {e}')
+                print(e)
+                print(articleUrl)
+
             if article:
                 articles.append(article)
-        return articles, alreadyPresent
+        return articles
 
     def scrape(self, start=1, end=124):
+        obj = {}
         for pageNo in range(start, end + 1):
-            articles, alreadyPresent = self.scrapeArticles(pageNo)
-            print(f'Page: {pageNo}, New: {len(articles)}, Already Present: {alreadyPresent}')
+            articles = self.scrapeArticles(pageNo)
+            print(pageNo, len(articles))
             obj = {}
+
             try:
                 with open(f'{self.dataPath}/info.json', 'r') as fileDesc:
                     data = fileDesc.read()
@@ -102,4 +103,4 @@ class Statista(Scraper):
 
             self.articles = obj
 
-        time.sleep(10)
+        time.sleep(100)
